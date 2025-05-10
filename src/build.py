@@ -1,6 +1,8 @@
 from pathlib import Path
 import shutil
 
+from pypdf import PdfReader
+
 
 SRC_DIR = Path(__file__).parent
 ROOT_DIR = SRC_DIR.parent
@@ -22,8 +24,14 @@ def copy_docs():
 def gen_dir_list(dir):
     items = []
 
-    for file in filter(Path.is_file, dir.iterdir()):
-        items.append(f"<li><a href=''>{file.name}</a></li>")
+    for document in filter(Path.is_file, dir.iterdir()):
+        with document.open("rb") as file:
+            info = PdfReader(file).metadata
+
+        url = document.relative_to(ROOT_DIR)
+        text = info.get('/Title', document.name)
+
+        items.append(f"<li><a href='{url}'>{text}</a></li>")
 
     for subdir in filter(Path.is_dir, dir.iterdir()):
         items.append(f"<li>{subdir.name}<ul>{gen_dir_list(subdir)}</ul></li>")
