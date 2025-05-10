@@ -28,7 +28,7 @@ jobs:
         uses: andgineer/uv-venv@3
 
       - name: Build
-        run: uv python src/build.py
+        run: uv run python src/build.py
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
